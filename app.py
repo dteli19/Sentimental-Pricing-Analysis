@@ -133,10 +133,10 @@ st.write(
 st.header("💼 Business Impact")
 st.markdown(
     """
-    - Enables early detection of declining guest experience
-    - Helps hosts align pricing with perceived value
-    - Identifies operational pain points such as cleanliness and check-in issues
-    - Supports proactive quality improvements before ratings decline
+    - Enables early detection of declining guest experience  
+    - Helps hosts align pricing with perceived value  
+    - Identifies operational pain points such as cleanliness and check-in issues  
+    - Supports proactive quality improvements before ratings decline  
     """
 )
 
@@ -146,4 +146,16 @@ st.markdown(
 st.header("📌 Key Takeaways")
 st.markdown(
     """
-    - VADER sentiment provides a fast and interpretable measure of guest experience
+    - VADER sentiment provides a fast and interpretable measure of guest experience  
+    - Sentiment complements structured listing data and improves insight depth  
+    - Pricing alone does not guarantee guest satisfaction  
+    - Monitoring sentiment trends enables smarter, proactive decision making  
+    """
+)
+
+# --------------------------------------------------
+# Footer
+# --------------------------------------------------
+st.markdown("---")
+st.caption("📊 AI & Analytics Project | Airbnb Pricing vs Sentiment | Portfolio Demonstration")
+
