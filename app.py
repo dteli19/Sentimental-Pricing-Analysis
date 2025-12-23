@@ -1,3 +1,4 @@
+import os
 import streamlit as st
 
 # --------------------------------------------------
@@ -9,14 +10,25 @@ st.set_page_config(
 )
 
 # --------------------------------------------------
+# Helper: Safe image loader
+# --------------------------------------------------
+def show_image(path: str, caption: str, width: int | None = None) -> None:
+    """
+    Displays an image if it exists; otherwise shows a helpful warning.
+    """
+    if os.path.exists(path):
+        st.image(path, caption=caption, use_container_width=(width is None), width=width)
+    else:
+        st.warning(f"Image not found: `{path}`. Please upload it to the repo and confirm the filename/path.")
+
+# --------------------------------------------------
 # Title & Introduction
 # --------------------------------------------------
 st.title("🏠 Airbnb Pricing vs Sentiment Analysis")
 st.markdown(
     """
-    This interactive app presents insights from an AI-driven analysis of **Rhode Island Airbnb listings**.
-    The project combines **pricing data**, **listing attributes**, and **VADER-based sentiment analysis**
-    of guest reviews to understand how customer experience aligns with pricing and listing characteristics.
+    This app summarizes an AI-driven analysis of **Rhode Island Airbnb listings** by combining:
+    **pricing + listing attributes** with **VADER sentiment scores** from guest reviews.
     """
 )
 
@@ -26,10 +38,10 @@ st.markdown(
 st.header("🔍 Project Overview")
 st.write(
     """
-    The objective of this project is to analyze the relationship between Airbnb listing prices and
-    customer sentiment extracted from review text. By converting unstructured reviews into measurable
-    sentiment scores and combining them with structured listing data, we uncover patterns that help
-    explain guest satisfaction, pricing strategy, and operational risks.
+    The objective is to analyze the relationship between Airbnb listing prices and customer sentiment
+    extracted from review text. By converting unstructured reviews into measurable sentiment scores and
+    joining them with structured listing data, we uncover patterns related to guest satisfaction and
+    price–value alignment.
     """
 )
 
@@ -50,7 +62,7 @@ st.markdown(
     **Engineered Variables**
     - Average sentiment per listing
     - Most common sentiment label per listing
-    - Price range bands for comparative analysis
+    - Price range bands for comparison
     """
 )
 
@@ -60,72 +72,81 @@ st.markdown(
 st.header("🧰 Methodology")
 st.markdown(
     """
-    - **Exploratory Data Analysis (EDA)**  
-      Examined price distributions, removed extreme outliers, and created price range bands.
-
-    - **Sentiment Analysis (VADER)**  
-      Generated compound sentiment scores and classified reviews as Positive, Neutral, or Negative.
-
-    - **Aggregation & Data Joining**  
-      Aggregated sentiment to the listing level and merged with pricing and listing attributes.
-
-    - **Visual & Segment Analysis**  
-      Compared sentiment across price ranges, room types, Superhost status, and over time.
+    - **EDA + Cleaning**: price standardization, missing value handling, outlier control  
+    - **VADER Sentiment**: compound score per review and sentiment labeling  
+    - **Aggregation + Join**: listing-level average sentiment merged with listing attributes  
+    - **Comparative Analysis**: sentiment trends across price ranges and listing segments  
     """
 )
 
 # --------------------------------------------------
-# Results & Insights
+# Results & Key Insights
 # --------------------------------------------------
 st.header("📊 Results & Key Insights")
+
+st.subheader("💰 Pricing vs Sentiment")
+st.write(
+    """
+    Prices cluster in affordable ranges with a small tail of extreme values.
+    Positive sentiment dominates across all price bands, meaning higher prices do not consistently guarantee higher sentiment.
+    High-priced listings with weaker sentiment indicate potential price–value mismatch risk.
+    """
+)
+
+st.subheader("🧩 Segment Differences")
+st.write(
+    """
+    Superhost listings show substantially more positive sentiment, supporting the Superhost badge as a quality signal.
+    Entire homes/apartments tend to receive stronger sentiment than private rooms, suggesting privacy and professionalism shape satisfaction.
+    """
+)
 
 st.subheader("🗣️ Guest Experience Drivers")
 st.write(
     """
-    Positive reviews are dominated by terms such as *clean*, *great*, *location*, and *stay*,
-    highlighting cleanliness and comfort as key satisfaction drivers. Negative reviews,
-    although limited in volume, often reference issues with rooms, hosts, and unmet expectations.
+    Negative sentiment is driven mainly by operational and expectation gaps, especially cleanliness, communication, and check-in issues.
+    These factors often matter more than amenities when reviews turn negative.
     """
 )
 
 st.subheader("📈 Sentiment Over Time")
 st.write(
     """
-    Guest sentiment remains consistently positive over a 14-year period, with occasional dips
-    corresponding to short-term dissatisfaction events. Sentiment trends often shift earlier
-    than star ratings, making sentiment a valuable early-warning indicator.
-    """
-)
-
-st.subheader("💰 Pricing vs Sentiment")
-st.write(
-    """
-    Higher prices do not consistently lead to higher sentiment. While premium listings generally
-    maintain strong sentiment, some high-priced listings exhibit neutral or negative sentiment,
-    signaling potential price–value mismatches.
-    """
-)
-
-st.subheader("🧩 Segment-Level Patterns")
-st.write(
-    """
-    Superhost listings receive substantially more positive sentiment, validating the Superhost badge
-    as a strong performance signal. Entire homes and apartments outperform private rooms in sentiment,
-    emphasizing the importance of privacy and professionalism.
+    Sentiment stays consistently positive over a long horizon with occasional dips that can flag guest dissatisfaction events.
+    Sentiment shifts can act as an early-warning signal before star ratings show meaningful change.
     """
 )
 
 # --------------------------------------------------
-# Forecasting Section
+# Visuals (Images from README)
 # --------------------------------------------------
-st.header("⭐ Forecasting Guest Satisfaction")
-st.write(
-    """
-    A Random Forest regression model was used to predict review scores using structured listing
-    attributes and average sentiment scores. Although ratings are tightly clustered between
-    4.5 and 5.0, sentiment improves predictive signal beyond structured features alone.
-    """
-)
+st.header("🖼️ Visuals Included in README")
+
+img_dir = "images"
+
+col1, col2 = st.columns(2)
+with col1:
+    show_image(
+        os.path.join(img_dir, "positive_negative_words.png"),
+        "Top Positive and Negative Words"
+    )
+with col2:
+    show_image(
+        os.path.join(img_dir, "sentiment_over_time.png"),
+        "Average Sentiment Over Time"
+    )
+
+col3, col4 = st.columns(2)
+with col3:
+    show_image(
+        os.path.join(img_dir, "sentiment_price_ranges.png"),
+        "Sentiment Distribution Across Price Ranges"
+    )
+with col4:
+    show_image(
+        os.path.join(img_dir, "predicted_vs_actual.png"),
+        "Forecasting Ratings: Predicted vs Actual"
+    )
 
 # --------------------------------------------------
 # Business Impact
@@ -135,8 +156,8 @@ st.markdown(
     """
     - Enables early detection of declining guest experience  
     - Helps hosts align pricing with perceived value  
-    - Identifies operational pain points such as cleanliness and check-in issues  
-    - Supports proactive quality improvements before ratings decline  
+    - Highlights operational pain points (cleanliness, check-in, communication)  
+    - Supports proactive improvements before ratings decline  
     """
 )
 
@@ -146,10 +167,10 @@ st.markdown(
 st.header("📌 Key Takeaways")
 st.markdown(
     """
-    - VADER sentiment provides a fast and interpretable measure of guest experience  
-    - Sentiment complements structured listing data and improves insight depth  
-    - Pricing alone does not guarantee guest satisfaction  
-    - Monitoring sentiment trends enables smarter, proactive decision making  
+    - VADER provides a fast and interpretable sentiment signal at scale  
+    - Joining review sentiment with listing attributes enables price–value insights  
+    - Price does not automatically predict satisfaction  
+    - Monitoring sentiment trends helps prioritize operational fixes  
     """
 )
 
@@ -157,5 +178,4 @@ st.markdown(
 # Footer
 # --------------------------------------------------
 st.markdown("---")
-st.caption("📊 AI & Analytics Project | Airbnb Pricing vs Sentiment | Portfolio Demonstration")
-
+st.caption("📊 AI & Analytics Project | Rhode Island Airbnb | Pricing vs Sentiment (VADER)")
