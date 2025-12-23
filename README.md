@@ -51,15 +51,15 @@ This section summarizes the key findings derived from combining Airbnb listing p
 ### 🗣️ Guest Experience Drivers (Text Insights)
 Word frequency analysis of VADER-labeled reviews highlights a strong positivity bias across the dataset. Positive reviews are dominated by words such as *great*, *stay*, *place*, *location*, and *clean*, indicating that cleanliness, comfort, and location are the primary drivers of guest satisfaction.  
 Negative reviews, although limited in volume, frequently reference *place*, *house*, *room*, *host*, and *stay*, suggesting that dissatisfaction often stems from operational and expectation-related issues rather than isolated service failures.
-![Top Positive and Negative Words](images/positive_negative_words.png)
+![Top Positive and Negative Words](positive_negative_words.png)
 
 ### 📈 Sentiment Trends Over Time
 Average VADER sentiment remains consistently positive over a 14-year period, with occasional sharp dips corresponding to periods of guest dissatisfaction. A gradual upward trend in recent years suggests improvements in listing quality and host professionalism. Notably, sentiment fluctuations often appear **before changes in star ratings**, reinforcing sentiment as an early-warning indicator of potential experience issues.
-![Average Sentiment Over Time](images/sentiment_over_time.png)
+![Average Sentiment Over Time](sentiment_over_time.png)
 
 ### 💰 Pricing vs Sentiment Relationship
 Across all price ranges, positive sentiment dominates, indicating that **higher prices do not consistently result in higher guest satisfaction**. While premium listings generally maintain strong sentiment, several high-priced listings still show neutral or negative sentiment, signaling potential price–value mismatches. This highlights the importance of aligning pricing strategies with perceived guest experience rather than relying on price alone.
-![Sentiment Distribution Across Price Ranges](images/sentiment_price_ranges.png)
+![Sentiment Distribution Across Price Ranges](sentiment_price_ranges.png)
 
 ### 🧩 Segment-Level Insights
 Clear differences emerge across listing segments:
@@ -68,7 +68,7 @@ Clear differences emerge across listing segments:
 
 ### ⭐ Forecasting Guest Satisfaction
 Forecasting analysis shows strong alignment between predicted and actual ratings on training data, but weaker generalization on test data due to ratings being tightly clustered between 4.5 and 5.0. Despite this limitation, incorporating **average VADER sentiment** improves predictive signal beyond structured listing attributes alone, confirming sentiment as a valuable complementary indicator of guest satisfaction.
-![Predicted vs Actual Ratings](images/predicted_vs_actual.png)
+![Predicted vs Actual Ratings](predicted_vs_actual.png)
 
 ### 🔑 Overall Insight
 Sentiment analysis provides a reliable, early indicator of guest experience quality. When combined with pricing and listing attributes, it enables proactive detection of operational issues, supports price–value alignment, and helps hosts and platforms improve review stability and customer satisfaction.
