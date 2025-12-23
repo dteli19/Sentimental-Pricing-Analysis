@@ -11,48 +11,39 @@ st.set_page_config(
 )
 
 # --------------------------------------------------
-# Styling (colors + nicer UI)
+# Styling (visual polish)
 # --------------------------------------------------
 st.markdown(
     """
     <style>
       .block-container {padding-top: 1.2rem; padding-bottom: 2rem;}
-      .kpi-card {
-        border: 1px solid rgba(255,255,255,0.10);
+      .card {
         border-radius: 18px;
-        padding: 16px 18px;
-        background: linear-gradient(135deg, rgba(98, 0, 238, 0.14), rgba(3, 218, 198, 0.10));
-        box-shadow: 0 6px 24px rgba(0,0,0,0.12);
-      }
-      .section-card{
-        border: 1px solid rgba(255,255,255,0.10);
-        border-radius: 18px;
-        padding: 18px 18px;
-        background: rgba(255,255,255,0.04);
-        box-shadow: 0 6px 24px rgba(0,0,0,0.10);
+        padding: 18px;
+        background: linear-gradient(135deg, rgba(99,102,241,0.12), rgba(34,197,94,0.12));
+        border: 1px solid rgba(255,255,255,0.12);
+        box-shadow: 0 6px 22px rgba(0,0,0,0.12);
+        margin-bottom: 14px;
       }
       .badge {
         display: inline-block;
-        padding: 6px 10px;
+        padding: 6px 12px;
         border-radius: 999px;
         font-size: 0.85rem;
-        margin-right: 8px;
-        background: rgba(3, 218, 198, 0.14);
-        border: 1px solid rgba(3, 218, 198, 0.25);
+        margin-bottom: 8px;
+        background: rgba(34,197,94,0.15);
+        border: 1px solid rgba(34,197,94,0.3);
       }
-      .muted {opacity: 0.85;}
-      .hr {
-        height: 1px;
-        background: linear-gradient(90deg, rgba(98,0,238,0.55), rgba(3,218,198,0.55));
-        margin: 14px 0 6px 0;
-        border-radius: 8px;
-      }
-      .small {font-size: 0.95rem;}
-      .tiny {font-size: 0.88rem;}
       .title-gradient {
-        background: linear-gradient(90deg, #8B5CF6, #22C55E);
+        background: linear-gradient(90deg, #6366F1, #22C55E);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
+      }
+      .muted {opacity: 0.85;}
+      .divider {
+        height: 1px;
+        background: linear-gradient(90deg, rgba(99,102,241,0.6), rgba(34,197,94,0.6));
+        margin: 18px 0;
       }
     </style>
     """,
@@ -60,48 +51,30 @@ st.markdown(
 )
 
 # --------------------------------------------------
-# Helpers
+# Helper
 # --------------------------------------------------
-def show_image(path: str, caption: str) -> None:
-    """Displays an image if it exists; otherwise shows a helpful warning."""
+def show_image(path: str, caption: str):
     if os.path.exists(path):
         st.image(path, caption=caption, use_container_width=True)
     else:
-        st.warning(
-            f"Image not found: `{path}`. Upload it to the repo root (same folder as app.py) "
-            f"or fix the filename in app.py."
-        )
-
-def info_card(title: str, body: str) -> None:
-    st.markdown(
-        f"""
-        <div class="section-card">
-          <div class="badge">{title}</div>
-          <div class="hr"></div>
-          <div class="small muted">{body}</div>
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
+        st.warning(f"Image not found: `{path}`")
 
 # --------------------------------------------------
-# Sidebar
+# Sidebar Navigation
 # --------------------------------------------------
-st.sidebar.markdown("## 🎛️ Navigation")
+st.sidebar.title("📍 Navigation")
 section = st.sidebar.radio(
-    "Go to",
-    ["Overview", "Data & Methods", "Results & Visuals", "Forecasting", "Business Impact"],
-    index=2
-)
-
-st.sidebar.markdown("---")
-st.sidebar.markdown("### ✅ Images expected in repo root")
-st.sidebar.code(
-    "positive_negative_words.png\n"
-    "sentiment_over_time.png\n"
-    "sentiment_price_ranges.png\n"
-    "predicted_vs_actual.png",
-    language="text"
+    "Jump to section",
+    [
+        "Overview",
+        "Problem Statement",
+        "Data & Methodology",
+        "Results & Visuals",
+        "Forecasting",
+        "Business Impact",
+        "Key Takeaways"
+    ],
+    index=0
 )
 
 # --------------------------------------------------
@@ -110,187 +83,134 @@ st.sidebar.code(
 st.markdown(
     """
     <h1 class="title-gradient">🏠 Rhode Island Airbnb: Sentiment vs Pricing</h1>
-    <p class="muted small">
-      Topic: VADER sentiment analysis on reviews + pricing comparison + listing-level aggregation.
+    <p class="muted">
+      AI-driven analysis using VADER sentiment scores, pricing exploration, and listing-level aggregation.
     </p>
     """,
     unsafe_allow_html=True
 )
 
-# Top KPI-like cards
-k1, k2, k3, k4 = st.columns(4)
-with k1:
-    st.markdown(
-        """<div class="kpi-card"><div class="tiny muted">Method</div>
-        <div style="font-size:1.15rem;font-weight:700;">VADER Sentiment</div>
-        <div class="tiny muted">Compound score + labels</div></div>""",
-        unsafe_allow_html=True
-    )
-with k2:
-    st.markdown(
-        """<div class="kpi-card"><div class="tiny muted">Granularity</div>
-        <div style="font-size:1.15rem;font-weight:700;">Review → Listing</div>
-        <div class="tiny muted">Aggregate by listing_id</div></div>""",
-        unsafe_allow_html=True
-    )
-with k3:
-    st.markdown(
-        """<div class="kpi-card"><div class="tiny muted">Lens</div>
-        <div style="font-size:1.15rem;font-weight:700;">Price Ranges</div>
-        <div class="tiny muted">Compare sentiment by tier</div></div>""",
-        unsafe_allow_html=True
-    )
-with k4:
-    st.markdown(
-        """<div class="kpi-card"><div class="tiny muted">Add-on</div>
-        <div style="font-size:1.15rem;font-weight:700;">Rating Forecast</div>
-        <div class="tiny muted">Predicted vs actual</div></div>""",
-        unsafe_allow_html=True
-    )
-
-st.markdown("<div class='hr'></div>", unsafe_allow_html=True)
+st.markdown("<div class='divider'></div>", unsafe_allow_html=True)
 
 # --------------------------------------------------
 # Sections
 # --------------------------------------------------
 if section == "Overview":
     st.header("🔍 Overview")
-    info_card(
-        "Goal",
-        "Analyze the relationship between Airbnb listing prices and customer review sentiment in Rhode Island. "
-        "Identify whether higher-priced listings consistently receive better sentiment scores by combining "
-        "structured listing attributes with unstructured review text."
-    )
-    info_card(
-        "Core Idea",
-        "Convert review text into measurable sentiment (VADER compound score), aggregate sentiment to the listing level, "
-        "merge with listing price bands, and compare patterns across pricing and listing segments."
-    )
-
-elif section == "Data & Methods":
-    st.header("📂 Data & Methods")
-
-    c1, c2 = st.columns(2)
-    with c1:
-        info_card(
-            "Datasets",
-            "Listings dataset includes price, bedrooms, bathrooms, amenities, neighborhood, room type, and Superhost status. "
-            "Reviews dataset includes text comments and timestamps."
-        )
-    with c2:
-        info_card(
-            "Cleaning & Engineering",
-            "Standardized the price column, handled missing values, reduced extreme outliers, created price-range bands, "
-            "computed VADER sentiment score per review, and engineered listing-level sentiment (average score and most common label)."
-        )
-
-    st.subheader("🧰 Techniques Used")
     st.markdown(
         """
-        - 📊 Pricing EDA: distribution checks, outliers, price banding  
-        - 💬 VADER Sentiment: compound score (–1 to +1), sentiment labels  
-        - 🔗 Aggregation + Join: listing-level sentiment merged with listing features  
-        - ☁️ Text Insights: top positive/negative word analysis and visuals  
+        <div class="card">
+        This project analyzes **Rhode Island Airbnb listings** by combining structured pricing and listing
+        attributes with unstructured guest reviews. Using **VADER sentiment analysis**, guest experiences
+        are quantified and compared across pricing ranges, room types, and host segments.
+        </div>
         """,
+        unsafe_allow_html=True
+    )
+
+elif section == "Problem Statement":
+    st.header("❓ Problem Statement")
+    st.markdown(
+        """
+        <div class="card">
+        Airbnb hosts and platforms often assume that higher-priced listings deliver superior guest experience.
+        However, pricing alone may not reflect how guests actually perceive value.
+
+        This project addresses:
+        <ul>
+          <li>Do higher-priced Airbnb listings consistently receive better sentiment?</li>
+          <li>What operational factors drive positive and negative guest experiences?</li>
+          <li>Can sentiment act as an early indicator before star ratings change?</li>
+        </ul>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
+elif section == "Data & Methodology":
+    st.header("📂 Data & Methodology")
+    st.markdown(
+        """
+        <div class="card">
+        <b>Datasets</b><br>
+        • Listings data: price, room type, bedrooms, bathrooms, amenities, neighborhood, Superhost status<br>
+        • Reviews data: guest comments and timestamps<br><br>
+
+        <b>Techniques Used</b><br>
+        • Price cleaning, outlier handling, and price-range binning<br>
+        • VADER sentiment scoring (compound score + labels)<br>
+        • Aggregation of review sentiment to listing level<br>
+        • Merging sentiment with pricing and listing attributes<br>
+        • Visual analysis across price tiers, segments, and time
+        </div>
+        """,
+        unsafe_allow_html=True
     )
 
 elif section == "Results & Visuals":
-    st.header("📊 Results, Visual Analysis & Key Insights")
+    st.header("📊 Results, Visual Analysis & Insights")
 
     st.markdown(
         """
-        **Summary of key findings from the combined pricing + sentiment dataset:**
-        - 💰 Higher prices do **not** consistently guarantee higher sentiment.  
-        - 🧩 Superhosts show stronger positivity, supporting the badge as a quality signal.  
-        - 🏠 Entire homes/apartments tend to have stronger sentiment than private rooms.  
-        - 🧼 Cleanliness, communication, and check-in issues dominate negative reviews.  
-        - 📈 Sentiment stays consistently positive over time with occasional dips, which can flag dissatisfaction events.  
+        • Positive sentiment dominates across listings, regardless of price<br>
+        • Higher prices do <b>not</b> consistently guarantee higher satisfaction<br>
+        • Superhosts and entire-home listings show stronger sentiment<br>
+        • Cleanliness, communication, and check-in issues drive most negative reviews
         """
     )
 
-    st.subheader("🖼️ Visuals from the Project")
+    st.subheader("🖼️ Project Visuals")
 
     col1, col2 = st.columns(2)
     with col1:
-        st.markdown("#### 🗣️ Top Positive & Negative Words")
-        show_image("positive_negative_words.png", "Top positive and negative review words")
-        st.caption("Highlights key experience drivers behind sentiment scores.")
-
+        show_image("positive_negative_words.png", "Top Positive and Negative Review Words")
     with col2:
-        st.markdown("#### 📈 Average Sentiment Over Time")
-        show_image("sentiment_over_time.png", "Average VADER sentiment over time")
-        st.caption("Sentiment remains positive across years with occasional dips and recent improvements.")
+        show_image("sentiment_over_time.png", "Average Sentiment Over Time")
 
     col3, col4 = st.columns(2)
     with col3:
-        st.markdown("#### 💰 Sentiment Across Price Ranges")
-        show_image("sentiment_price_ranges.png", "Sentiment distribution across price bands")
-        st.caption("Price alone does not ensure satisfaction; high-price low-sentiment listings indicate mismatch risk.")
-
+        show_image("sentiment_price_ranges.png", "Sentiment Distribution Across Price Ranges")
     with col4:
-        st.markdown("#### ⭐ Forecasting Ratings (Visual)")
-        show_image("predicted_vs_actual.png", "Predicted vs Actual ratings")
-        st.caption("Shows how well the model aligns with true ratings; generalization can be limited by clustered ratings.")
+        show_image("predicted_vs_actual.png", "Predicted vs Actual Ratings")
 
 elif section == "Forecasting":
     st.header("⭐ Forecasting Guest Satisfaction")
-
-    info_card(
-        "What was attempted",
-        "A Random Forest regression approach was used to predict review scores using structured listing features "
-        "and the engineered listing-level sentiment (avg VADER score)."
-    )
-
     st.markdown(
         """
-        **Interpretation**
-        - Ratings are tightly clustered (often around 4.5–5.0), which limits predictability.  
-        - Even with this constraint, adding average sentiment strengthens the signal beyond structured features alone.  
-        """
-    )
+        <div class="card">
+        A Random Forest regression approach was explored to predict review scores using structured listing
+        features and average sentiment scores.
 
-    st.subheader("📌 Forecasting Visual")
-    show_image("predicted_vs_actual.png", "Predicted vs Actual ratings (training/test view)")
+        While ratings are tightly clustered (4.5–5.0), sentiment improved predictive signal beyond
+        structured variables alone, highlighting its complementary value.
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
 
 elif section == "Business Impact":
     st.header("💼 Business Impact")
-
     st.markdown(
         """
-        <div class="section-card">
-          <div class="badge">Operational Improvements</div>
-          <div class="hr"></div>
-          <div class="small muted">
-            Strengthen cleaning quality, provide clear check-in instructions, communicate promptly, and keep descriptions accurate.
-            These operational basics are the most consistent drivers of negative sentiment.
-          </div>
+        <div class="card">
+        • Detect guest dissatisfaction earlier than star ratings<br>
+        • Identify price–value mismatches in premium listings<br>
+        • Prioritize operational improvements (cleaning, check-in, communication)<br>
+        • Support data-driven pricing and quality control decisions
         </div>
         """,
         unsafe_allow_html=True
     )
 
+elif section == "Key Takeaways":
+    st.header("📌 Key Takeaways")
     st.markdown(
         """
-        <div class="section-card">
-          <div class="badge">Early-Warning Signal</div>
-          <div class="hr"></div>
-          <div class="small muted">
-            Monitor monthly sentiment trends and recurring negative keywords to detect experience issues earlier than star ratings.
-          </div>
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
-
-    st.markdown(
-        """
-        <div class="section-card">
-          <div class="badge">Price–Value Alignment</div>
-          <div class="hr"></div>
-          <div class="small muted">
-            Adjust pricing when sentiment dips and increase prices only when sentiment supports a premium experience.
-            High-price listings with lower sentiment represent the highest business risk.
-          </div>
+        <div class="card">
+        • VADER sentiment provides a fast, interpretable measure of guest experience<br>
+        • Pricing alone does not determine satisfaction<br>
+        • Sentiment trends act as an early-warning signal<br>
+        • Combining text and structured data unlocks deeper marketplace insights
         </div>
         """,
         unsafe_allow_html=True
@@ -299,6 +219,5 @@ elif section == "Business Impact":
 # --------------------------------------------------
 # Footer
 # --------------------------------------------------
-st.markdown("<div class='hr'></div>", unsafe_allow_html=True)
-st.caption("📌 Portfolio App | Rhode Island Airbnb | Sentiment (VADER) + Pricing Analysis")
-
+st.markdown("<div class='divider'></div>", unsafe_allow_html=True)
+st.caption("📊 Portfolio Project | Rhode Island Airbnb | Sentiment (VADER) & Pricing Analysis")
